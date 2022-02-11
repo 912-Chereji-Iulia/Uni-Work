@@ -1,0 +1,33 @@
+int i=0, pos_new_min=0, pos_new_max=this->capacity-1,j;
+
+    //find the new position of the minimum element in the dynamic array in case we want to delete the min
+    while(i<this->capacity-1 && this->elements[i]!= true)
+        i++;
+    pos_new_min=i;
+
+    //find the new position of the maximum element in the dynamic array in case we want to delete the max
+    i=pos_new_max;
+    while(i>pos_new_min && this->elements[i]!=true)
+        i--;
+    pos_new_max = i;
+
+    //we resize the dynamic array
+    int smaller_capacity = pos_new_max - pos_new_min + 1;
+    bool* resized_array= new bool[smaller_capacity];
+    //we copy the old values in the newly created dynamic array
+    i=0;
+    for(j=pos_new_min;j<=pos_new_max;j++)
+        resized_array[i++]=this->elements[j];
+
+    delete[] elements;
+    this->elements = resized_array;
+    this->capacity = smaller_capacity;
+    this->length --; // we decrease the nr of elements in the set
+
+    if(not this->isEmpty())
+    {
+        int new_minimum = this->min + pos_new_min;
+        this->min = new_minimum; //we set the new minimum if it is the case
+    }
+    else
+        this->min=0; //if, by removing elements, we get an empty set, we reset the minimum

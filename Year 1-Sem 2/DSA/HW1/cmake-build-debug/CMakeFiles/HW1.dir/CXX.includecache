@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Iulia/Desktop/sem 2/DSA/HW1/Set.cpp
+Set.h
+C:/Users/Iulia/Desktop/sem 2/DSA/HW1/Set.h
+SetIterator.h
+C:/Users/Iulia/Desktop/sem 2/DSA/HW1/SetIterator.h
+exception
+-
+iostream
+-
+
+C:/Users/Iulia/Desktop/sem 2/DSA/HW1/Set.h
+
+C:/Users/Iulia/Desktop/sem 2/DSA/HW1/SetIterator.h
+Set.h
+C:/Users/Iulia/Desktop/sem 2/DSA/HW1/Set.h
+exception
+-
+
