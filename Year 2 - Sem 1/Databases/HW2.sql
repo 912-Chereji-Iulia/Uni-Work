@@ -1,4 +1,5 @@
-
+--insert, update, delete statements
+-- multiple queries
 CREATE TABLE DEPARTMENT
 	(DepartmentId INT PRIMARY KEY,
 	DepartmentName VARCHAR(50),
