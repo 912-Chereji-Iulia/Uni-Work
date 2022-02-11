@@ -1,0 +1,3 @@
+C:/Users/Iulia/Desktop/Info/a23-912-Chereji-Iulia/cmake-build-debug/CMakeFiles/a23_912_Chereji_Iulia.dir
+C:/Users/Iulia/Desktop/Info/a23-912-Chereji-Iulia/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Iulia/Desktop/Info/a23-912-Chereji-Iulia/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Iulia/Desktop/Info/a23-912-Chereji-Iulia/Array.c
+Array.h
+C:/Users/Iulia/Desktop/Info/a23-912-Chereji-Iulia/Array.h
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+
+C:/Users/Iulia/Desktop/Info/a23-912-Chereji-Iulia/Array.h
+
