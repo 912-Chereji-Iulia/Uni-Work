@@ -1,4 +1,4 @@
-
+--a versioning mechanism that allows you to easily switch between database versions.
 CREATE TABLE DEPARTMENT
 	(DepartmentId INT PRIMARY KEY,
 	DepartmentName VARCHAR(50),
