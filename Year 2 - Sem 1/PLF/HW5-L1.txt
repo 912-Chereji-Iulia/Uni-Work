@@ -1,0 +1,113 @@
+; L1 - ex 3
+
+;a.Write a function that inserts in a linear list a given atom A after the 2nd, 4th, 6th, ... element.
+
+; insert(l1l2..ln, A, pos)={[], if n=0 
+                    ; return l1 + insert(l2l3..ln, A, pos+1), if pos%2==1
+                    ;return l1+ A+insert(l2l3..ln, A, pos+1), if pos%2==0
+                    ;}
+                    
+(defun insert (l A pos)
+    (cond
+    ((null l) nil)
+    ((equal (mod pos 2) 0 ) (cons (car l) (cons A (insert(cdr l) A (+ pos 1)))))
+    (t (cons (car l) (insert(cdr l) A (+ pos 1))))
+    )
+    
+)
+
+(defun mainA (l e)
+    (insert l e 1)
+)
+
+
+(print (mainA '(1 2 3 4 5 6 7 8) 10))
+
+
+;b. Write a function to get from a given list the list of all atoms, on any level, but reverse order
+
+; add_elem(l1..ln, k)={k, if n=0
+;                     l1+add_elem(l2...ln,k), otherwise
+;                     }
+
+;reverse_order(l1..ln)={[], if n=0
+;                       return add_elem(reverse_order(l2..ln), l1),if atom(l1)
+;                       return add_elem(reverse_order(l2..ln), reverse_order(l1)), if l1 is list (l1=l11l12..l1m)
+
+
+(defun add_elem (l k)
+    (cond
+    ((null l) k)
+    (t (cons (car l) (add_elem (cdr l) k)))
+    )
+)
+
+(defun reverse_order(l)
+    (cond
+    ((null l) nil)
+    ((listp (car l)) (add_elem (reverse_order(cdr l)) (reverse_order(car l ))))
+    (t (add_elem (reverse_order(cdr l)) (list (car l))))
+    )
+
+)
+    
+(print (reverse_order '(((A B) C) (D E))))
+
+
+;c.Write a function that returns the greatest common divisor of all numbers in a nonlinear list.
+
+;my_gcd(a,b)={null, if a not nr and b not nr
+         ;b, if a not nr 
+         ;a, if b not nr
+        ;a, b=0
+	    ;my_gcd(b, a%b), otherwise
+
+;listGCD(l1..ln)={0,if n=0
+;                l1, if n=1 and l1 not list
+;                my_gcd(listGCD(l1),listGCD(l2..ln)), if l1 list
+;                my_gcd(l1, listGCD(l2..ln)), otherwise
+
+
+(defun my_gcd(a b)
+    (cond
+    ((and (not (numberp a)) (not (numberp b))) nil)
+    ((not (numberp a)) b)
+    ((not (numberp b)) a)
+    ((equal b 0) a)
+    (t (my_gcd b (mod a b)))
+    )
+
+)
+
+(defun list_gcd(l)
+    (cond 
+    ((null l) 0)
+    ((and (atom (car l)) (null (cdr l))) (car l))
+    ((listp (car l)) (my_gcd (list_gcd (car l)) (list_gcd (cdr l))))
+    (T (my_gcd (car l) (list_gcd (cdr l))))
+    
+    )
+
+)
+(print (list_gcd'(12 ( 24 (12 A B)) 48 C (26 12))))
+
+
+
+;d. Write a function that determines the number of occurrences of a given atom in a nonlinear list.
+;	nr_occ(l1..ln, e) = {
+		;0, n=0
+		;nr_occ(l2..ln, e) + 1, l1 atom and l1 = e
+		;nr_occ(l2..ln, e), l1 atom and l1 !=e
+		;nr_occ(l1, e) + nr_occ(l2..ln, e), l1 list
+	;}
+
+(defun nr_occ(l e)
+    (cond 
+    ((null l) 0)
+    ((and (atom (car l)) (equal e (car l))) (+ (nr_occ (cdr l) e) 1))
+    ( (atom (car l)) (nr_occ (cdr l) e))
+    ((listp (car l)) (+ (nr_occ(car l) e) (nr_occ (cdr l) e)))
+    )
+
+)
+(print (nr_occ `(1 2 (1 2 3) 1 2 3) 2))

@@ -1,0 +1,20 @@
+; 2.Write a function that returns the sum of numeric atoms in a list,at any level.
+
+; sum(l)={l, if l is a nr
+;         0, if l is non numeric atom
+;         sum(l1)+sum(l2)+...+sum(ln), if l is list
+
+(defun sum (l)
+    (cond
+    ((numberp l) l)
+    ((atom l) 0)
+    ((listp l) (apply #'+ (mapcar #'sum l)))
+    
+    )
+
+
+)
+
+(print (sum '(1)))
+(print (sum '(a)))
+(print (sum '(1 2 3 a (2 4 d) 4 (-2 3 (a b 1)))))
