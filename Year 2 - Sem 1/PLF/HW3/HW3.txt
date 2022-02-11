@@ -1,0 +1,58 @@
+% P2 - exercise 5
+
+% a) subsitute all occurences of an elem of a list with all the elems of another list
+
+%concat(L1-list 1,L2-list 2,R-final list)
+%flow model(i,i,o)
+concat([], L, L).
+concat([H|T], L, [H|R]) :-
+    concat(T, L, R).
+
+%subs(L1-initial list, E-element to be substituted, L2-given list, R-resulted list)
+%flow model (i,i,i,o)
+subs([],_,_,[]).
+subs([H|T], E, L, R):-
+    H=:=E,
+    concat(L,T,RT),
+    subs(RT,E,L,R).
+   
+subs([H|T], E, L, [H|R]):-
+    H\=E,
+    subs(T,E,L,R).
+
+%altfel
+subs([],_,_,[]).
+subs([E|T], E, L, R):-
+    !,
+    concat(L,T,RT),
+    subs(RT,E,L,R).
+   
+subs([H|T], E, L, [H|R]):-
+    subs(T,E,L,R).
+
+
+   
+% b)  For a heterogeneous list, formed from integer numbers and list of numbers, 
+%replace in every sublist all occurrences of the first element from sublist with a new given list.
+
+%replace(L1- inital list, L2-list for the replacement, R- resulted list)
+% flow model(i,i,o)
+replace([],_,[]).
+replace([H|T], L, R):-
+    is_list(H),
+    H=[H1|_],
+    subs(H,H1,L,R1),
+    replace(T,L,RT),
+    R=[R1|RT].
+  
+replace([H|T], L, [H|R]):-
+    number(H),
+    replace(T,L,R).
+
+
+
+
+
+
+
+

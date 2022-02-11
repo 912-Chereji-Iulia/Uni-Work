@@ -1,0 +1,57 @@
+
+% ex 1 - LCM of list
+
+%gcd(A-first number,integer, B-second number,,integer, Result - result,integer)
+%gcd(i,i,o) - flow model
+gcd(A,A,A).
+gcd(A,B,R) :-
+    B>A,
+    C is B-A, 
+    gcd(A,C,R).
+gcd(A,B,R) :-
+    B<A,
+    C is A-B, 
+    gcd(C,B,R).
+
+%lcm(A-first number,integer, B-second number,integer, Result - result,integer)
+%lcm(i,i,o) - flow model
+lcm(A,A,A).
+lcm(A,B,R) :-
+    gcd(A,B,R1),
+    R is A*B/R1.
+
+
+%listLCM(L-list, R-result,integer)
+%listLCM(i,o) - flow model
+
+listLCM([],0).
+listLCM([E], E).
+listLCM([H|T], R) :-
+    listLCM(T, R1),
+    lcm(H,R1,R).
+
+
+%ex 2 - insert item
+
+%is_pow2(N - number, integer)
+%is_pow2(i) - flow model
+is_pow2(1).
+is_pow2(N):-
+	N mod 2 =:= 0,
+    N1 is N/2,
+	is_pow2(N1).
+
+%addv(L - list, V - value integer, Pos - position integer, Result-resulted list )
+%addv(i,i,i,o) - flow model    
+addv([], _, _ ,[]).
+addv([H|T], V, Pos, [H|[V|T1]]) :- 
+    NewPos is Pos,
+    is_pow2(NewPos),
+    Pos1 is Pos + 1,
+    addv(T, V, Pos1, T1).
+
+addv([H|T], V, Pos, [H|T1]) :-
+    Pos1 is Pos + 1 ,
+    addv(T, V, Pos1, T1).
+    
+addv(List, V, Result) :- addv(List, V, 1, Result).    
