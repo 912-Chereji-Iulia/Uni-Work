@@ -1,0 +1,351 @@
+%EXERCISE 1
+% ex 1a - LCM of list
+
+%gcd(A-first number,integer, B-second number,,integer, Result - result,integer)
+%gcd(i,i,o) - flow model
+
+gcd(A,A,A).
+gcd(A,B,R) :-
+    B>A,
+    C is B-A, 
+    gcd(A,C,R).
+gcd(A,B,R) :-
+    B<A,
+    C is A-B, 
+    gcd(C,B,R).
+
+%lcm(A-first number,integer, B-second number,integer, Result - result,integer)
+%lcm(i,i,o) - flow model
+lcm(A,A,A).
+lcm(A,B,R) :-
+    gcd(A,B,R1),
+    R is A*B/R1.
+
+
+%listLCM(L-list, R-result,integer)
+%listLCM(i,o) - flow model
+
+listLCM([],0).
+listLCM([E], E).
+listLCM([H|T], R) :-
+    listLCM(T, R1),
+    lcm(H,R1,R).
+
+
+%ex 1b - insert item
+
+%is_pow2(N - number, integer)
+%is_pow2(i) - flow model
+is_pow2(1).
+is_pow2(N):-
+	N mod 2 =:= 0,
+    N1 is N/2,
+	is_pow2(N1).
+
+%addv(L - list, V - value integer, Pos - position integer, Result-resulted list )
+%addv(i,i,i,o) - flow model    
+addv([], _, _ ,[]).
+addv([H|T], V, Pos, [H|[V|T1]]) :- 
+    NewPos is Pos,
+    is_pow2(NewPos),
+    Pos1 is Pos + 1,
+    addv(T, V, Pos1, T1).
+
+addv([H|T], V, Pos, [H|T1]) :-
+    Pos1 is Pos + 1 ,
+    addv(T, V, Pos1, T1).
+    
+addv(List, V, Result) :- addv(List, V, 1, Result).    
+
+
+%EXERCISE 2
+%ex 2a-remove all occurences certain atom
+
+remove_atom([],_,[]).
+remove_atom([H|T], A, [H|T1]) :-
+    A =\= H,
+    remove_atom(T,A,T1).
+
+remove_atom([H|T], A, T1) :-
+    A =:= H,
+    remove_atom(T,A,T1).
+
+%ex 2b-Define a predicate to produce a list of pairs (atom n) from an initial list of atoms.
+% In this initial list atom has n occurrences.
+%Eg.:numberatom([1, 2, 1, 2, 1, 3, 1], X) => X =[[1, 4], [2, 2], [3, 1]].
+
+count_occurences([],_,0).
+count_occurences([H|T], A, R):-
+    H=:=A,
+    count_occurences(T,A,R1),
+    R is R1+1.
+count_occurences([H|T],A,R):-
+     H =\= A,
+    count_occurences(T,A,R).
+
+numberatom([],[]).
+numberatom([H|T], [[H,N]|R]):-
+    count_occurences([H|T],H,N),
+    remove_atom([H|T],H,RR),
+    numberatom(RR,R).
+
+%EXERCISE 3
+%3a-Define a predicate to remove from a list all repetitive elements
+
+remove_repetitive([], []).
+remove_repetitive([H|T], [H|R]) :-
+    count_occurences([H|T], H, RC),
+    RC =:= 1,
+    remove_repetitive(T, R).
+remove_repetitive([H|T], R) :-
+    count_occurences([H|T], H, RC),
+    RC =\= 1,
+    remove_atom([H|T], H, RO),
+    remove_repetitive(RO, R).
+
+%3b- Remove all occurrence ofa maximum value from a list on integer numbers.
+
+maxim_number(A, B, A) :- A >= B.
+maxim_number(A, B, B) :- A < B.
+
+maxim_list([H], H).
+maxim_list([H|T], R) :- 
+    maxim_list(T, RM),
+    maxim_number(H, RM, R).
+
+remove_maxim(L, R) :-
+    maxim_list(L, RM),
+    remove_occurences(L, RM, R).
+
+%EXERCISE 4
+%a. Write a predicate to determine thedifference of two sets.
+
+contains([V|_], V) :- !.
+contains([_|T], V) :- 
+    contains(T, V).
+
+difference([], _, []).
+difference([H|T], B, R) :-
+    contains(B, H),
+    difference(T, B, R), !.
+difference([H|T], B, [H|R]) :-
+    difference(T, B, R).
+
+%b. Write a predicate to add value 1 after every even element from a list.
+add_1([],[]).
+
+add_1([H|T],[H|[1|R]]):-
+    H mod 2 =:= 0,
+    add_1(T,R).
+
+add_1([H|T],[H|R]):-
+    H mod 2 =:= 1,
+    add_1(T,R).
+
+%EXERCISE 5
+
+%a. Write a predicate to compute the union of two sets.
+union([], [], []).
+union([H|T], B, [H|R]) :-
+    remove_atom([H|T], H, R1),
+    remove_atom(B, H, R2),
+    union(R1, R2, R).
+union([], B, R) :-
+      union(B, [], R).
+
+%b. Write a predicate to determine the set of all the pairs of elements in a list.
+
+sets(_, 0, []) :- !.
+sets([H|T], K, [H|R]) :-
+    K1 is K - 1,
+    sets(T, K1, R).
+sets([_|T], K, R) :-
+    sets(T, K, R).
+
+gen_sets([], []).
+gen_sets(L, R) :- findall(RS, sets(L, 2, RS), R).
+
+%EXERCISE 6
+%a. Write a predicate to test ifa list is a set.
+
+test_set([]).
+test_set([H|T]) :- 
+    count_occurences([H|T], H, R),
+    R =:= 1,
+    test_set(T), !.
+
+%Write a predicate to remove the first three occurrencesof an element in a list. 
+%If the element occurs less than three times, all occurrenceswill be removed.
+
+remove_k_occurences([], _, _, []) .
+remove_k_occurences(L, _, 0, L) .
+remove_k_occurences([H|T], E, K, R) :- 
+    H =:= E,
+    K1 is K - 1,
+    remove_k_occurences(T, E, K1, R).
+remove_k_occurences([H|T], E, K, [H|R]) :-
+     H =\= E,
+     remove_k_occurences(T, E, K, R).
+
+
+remove_3_occurences(L, E, R) :- remove_k_occurences(L, E, 3, R).
+
+%EXERCISE 7
+%A.Write a predicate to compute the intersection of two sets.
+intersection([], _, []).
+intersection([H|T], B, [H|R]) :-
+    contains(B, H),
+    intersection(T, B, R), !.
+intersection([_|T], B, R) :- intersection(T, B, R).
+
+%b. Write a predicate to create a list (m, ..., n) of all integer numbers fromthe interval[m, n].
+
+new_list(N, N, [N]).
+new_list(M, N, [M|R]) :- 
+    New_m is M + 1,
+    new_list(New_m, N, R).
+
+%EXERCISE 8
+%A. Write a predicate to determine if a list has even numbers of elements
+% without counting the elements from the list.
+
+even_list([]).
+even_list([_, _|T]) :- 
+    even_list(T).
+
+%B.Write a predicate to delete first occurrence of the minimum number from a list.
+min_numbers(A, B, A) :- A =< B.
+min_numbers(A, B, B) :- A > B.
+
+
+minim_list([H], H).
+minim_list([H|T], R) :- 
+    minim_list(T, R1),
+    min_numbers(H, R1, R).
+
+
+delete_first_occurence([H|T], H, T) :- !.
+delete_first_occurence([H|T], M, [H|R]) :- 
+    delete_first_occurence(T, M, R).
+
+delete_first_min(L, R) :-
+    minim_list(L, RM),
+    delete_first_occurence(L, RM, R).
+
+%EXERCISE 9 
+%A.Insert an element on the position n in a list.
+insert_value_in_list_on_position(L, E, 0, [E|L]):-!.
+insert_value_in_list_on_position([H|T], E, P, [H|R]):-
+    P1 is P - 1,
+    insert_value_in_list_on_position(T, E, P1, R).
+%b.. Define a predicate to determine the greatest common divisor of allnumbers froma list.
+list_gcd([],0).
+list_gcd([H|T],R):-
+    list_gcd(T,R1),
+    gcd(R1,H,R).
+
+%EXERCISE 10
+%. Define a predicate to test if a list of an integer elements has a "valley" aspect 
+%(a set has a "valley" aspect if elements decreases up to a certain point, and then increases. 
+valley([_], 0).
+valley([H1, H2|T], _) :- H1 < H2, 
+    valley([H2|T], 0), !.
+valley([H1, H2|T], 1) :- H1 > H2,
+    valley([H2|T], 1), !.
+
+%Calculate the alternatesum of list’s elements(l1 -l2 + l3 ...).
+
+alternative_sum([], 0).
+alternative_sum([H], H).
+alternative_sum([H1, H2|T], R) :-
+    alternative_sum(T, R1),
+    R is H1 - H2 + R1.
+
+%EXERCISE 11
+%A.Write a predicate to substitutean element from a list with another element in the list.
+substitute_elem([], _, _, []) :- !.
+substitute_elem([H|T], E1, E2, [E2|R]) :- H =:= E1,
+    substitute_elem(T, E1, E2, R).
+substitute_elem([H|T], E1, E2, [H|R]) :- H =\= E1,
+    substitute_elem(T, E1, E2, R).
+
+%B.Write a predicate to create the sublist (lm, ..., ln) from the list (l1,..., lk).
+sub_list(_, _, N, POS, []) :- POS > N, !.
+sub_list([H|T], M, N, POS, [H|R]) :- M =< POS, POS =< N,
+    New_pos is POS + 1,
+    sub_list(T, M, N, New_pos, R), !.
+sub_list([_|T], M, N, POS, R) :-
+    New_pos is POS + 1,
+    sub_list(T, M, N, New_pos, R).
+
+ % 12.
+% a. Write a predicate to substitute in a list a value with all the elements of another list.
+
+inserare([], L, L).
+inserare([H|T], L, [H|R]) :- inserare(T, L, R).
+
+substitue_elem([], _, _, []).
+substitue_elem([H|T], E, List, R) :- H =:= E,
+    inserare(List, T, RI),
+    substitue_elem(RI, E, List, R).
+substitue_elem([H|T], E, List, [H|R]) :- H =\= E,
+    substitue_elem(T, E, List, R).
+
+% % b. Remove the n-th element of a list
+
+remove_n([], _, []).
+remove_n([_|T], 1, T).
+remove_n([H|T], K, [H|R]) :-
+    K1 is K - 1,
+    remove_n(T, K1, R).   
+%13.
+%A.Transform a list in a set, in the order of the last occurrences of elements.
+list_to_set([], []) :- !.
+list_to_set([H|T], [H|R]) :- 
+    count_occurences(T, H, RC),
+    RC =:= 0,
+    list_to_set(T, R), !.
+list_to_set([_|T], R) :-
+    list_to_set(T, R).
+
+%14.
+%A.Write a predicate to test equality of two sets without using the set difference
+my_length([], 0).
+my_length([_|T], C):- my_length(T, C1),
+    C is C1 + 1.
+
+set_equal([], []).
+set_equal([HA|TA], [HB|TB]) :-
+    my_length(TA, CA),
+    my_length(TB, CB),
+    CA =:= CB,
+    contains([HB|TB], HA),
+    contains([HA|TA], HB),
+    remove_atom(TB, HA, RA),
+    remove_atom(TA, HB, RB),
+    set_equal(RA, RB).
+
+%b. Write a predicate to select the n-th element of a given list.
+select_n([H|_], 1, H) :- !.
+select_n([_|T], N, R) :- 
+    New_n is N - 1,
+    select_n(T, New_n, R).
+
+%15.a. Write a predicate to transform a list in a set, considering the first occurrence.
+% Eg: [1,2,3,1,2] is transform in [1,2,3].
+
+    
+list_to_set([], []).
+list_to_set([H|T], [H|R]) :- 
+    remove_atom(T, H, R1),
+    list_to_set(R1, R).
+%b.Write  a  predicate  to  decompose  a  list  in  a  list  respecting  the  following:  [list  of  even  numbers  list  of  odd numbers] and also
+%return the number of even numbers and the numbers of odd numbers.
+
+decompose([], [0, 0, [], []]).
+decompose([H|T], [H1f, H2, [H|H3], H4]) :- H mod 2 =:= 0,
+    decompose(T, [H1, H2, H3, H4]),
+	H1f is H1 + 1.
+decompose([H|T], [H1, H2f, H3, [H|H4]]) :- H mod 2 =:= 1,
+    decompose(T, [H1, H2, H3, H4]),
+	H2f is H2 + 1.

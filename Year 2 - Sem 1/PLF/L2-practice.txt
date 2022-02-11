@@ -1,0 +1,331 @@
+;1.For a given tree of type (1) return the path from the root node to a certain given nodeX.
+
+;(node no-subtrees list-subtree-1 list-subtree-2 ...)(1)
+
+(defun travLeft(tree v m)
+    (cond
+    ((null tree) nil)
+    ((= v (+ 1 m)) nil)
+    (t (cons (car tree) (cons (cadr tree) (travLeft (cddr tree) (+ 1 v) (+ (cadr tree) m)))))
+    
+    )
+
+)
+
+(defun leftSubt (tree)
+	(travLeft (cddr tree) 0 0)
+)
+
+(defun travRight (tree v m)
+	(cond
+		((null tree) nil)
+		((eq v (+ 1 m)) tree)
+		(T (cadr tree ) (travRight (cddr tree) (+ 1 v) (+ (cadr tree) m)))
+))
+
+(defun rightSubt (L)
+	(travRight (cddr L) 0 0)
+)
+
+;appears(l1l2...ln,e)={nil,n=0
+;					true,l1=e
+;					appears(leftSubt(l)) or appears(rightSubt(l))}
+
+(defun appears (L e)
+	(cond
+		((null L) nil)
+		((eq (car L) e) T)
+		(T (or (appears (leftSubt L) e) (appears (rightSubt L) e)))
+	))
+
+;path(l1l2...ln,X)={nil,n=0
+;					l1,l1=X
+;					l1+path(leftSubt(l),X),appears(leftSubt(l),X)
+;					l1+path(rightSubt(l),X),otherwise}
+
+(defun path (L X)
+	((lambda (A)
+	(cond
+		((null L) nil)
+		((eq (car L) X) (list X))
+		((appears A X) (append (list (car L)) (path A X)))
+		(T (append (list (car L)) (path (rightSubt L) X)))
+)) (leftSubt L)))
+
+(print (path '(A 2 B 0 C 2 D 0 E 0) 'E))
+
+;2. Return the list of nodes on the k-th level of a tree of type (1).
+
+(defun kLvl (L k lvl)
+	(cond
+		((null L) nil)
+		((eq lvl k) (list (car L)))
+		(T (append (kLvl (leftSubt L) k (+ 1 lvl)) (kLvl (rightSubt L) k (+ 1 lvl))))
+))
+
+(print (kLvl '(A 2 B 0 C 2 D 0 E 0) 2 0))
+
+
+;3.Return the number of levels of a tree of type (1)
+(defun my_max (a b)
+    (if (> a b) a b)
+)
+
+(defun len_list (l r)
+    (cond 
+    ((null l) 0)
+  
+    (T (+ 1 (len_list (cdr l) (+ 1 r))))
+    
+    )
+    
+)
+
+
+(defun nrLevels (l)
+
+(cond
+    ((null l) 0)
+    (T ( /  (my_max (len_list (travLeft (cddr l) 0 0) 0 ) (len_list (travRight (cddr l) 0 0) 0)) 2)
+)
+
+    
+
+))
+(print (nrLevels '(A 2 B 0 C 2 D 0 E 0)))
+
+
+;4.Convert a tree of type (2) to type (1).
+
+;(A 2 B 0 C 2 D 0 E 0)  (1)
+;(A (B) (C (D) (E)))  (2)
+
+(defun conversion(L)
+    (cond 
+    ((null l) nil)
+    ((null (cadr l)) (append (list (car l)) (list 0)))
+    ((null (caddr l)) (append (list (car l)) (list 1) (conversion (cadr l))))
+    (t (append (list (car l)) (list 2) (conversion (cadr l)) (conversion (caddr l))))    
+    )
+
+)
+
+(print (conversion '(A (B) (C (D) (E)))))
+
+;5.Return the level (depth) of a node in a tree of type (1). The level of the root element is 0
+
+(defun get_lvl(L node N lvl children)
+    (cond
+    ((null L) 0)
+    ((equal node N) lvl)
+    ((= children 0) L)
+    (t 
+        (setq new (get_lvl (cddr L) (car L) N (+ 1 lvl) (cadr l)))
+        (cond
+            ((listp new) (get_lvl new node N lvl (- children 1)))
+            (t new)
+        
+        )
+    
+    )
+    
+    )
+
+)
+(defun get_lvl_main (L N)
+    (get_lvl (cddr L) (car L) N 0 (cadr L))
+
+)
+
+(print (get_lvl_main '(A 2 B 0 C 2 D 0 E 0) 'D))
+
+;6.Return the list of nodes of a tree of type (1) accessed inorder.
+
+; myAppend(l1l2...ln, p1p2...pm) = 
+; = p1p2...pm, if n = 0
+; = {l1} U myAppend(l2...ln, p1p2...pm), otherwise
+
+(defun myAppend(l p)
+  (cond
+    ((null l) p)
+    (t (cons (car l) (myAppend (cdr l) p)))
+  )
+)
+
+
+; inorder(l1l2...ln) = 
+; = nil, if n = 0
+; = myAppend(inorder(stang(l1l2...ln)), myAppend(list(l1), inorder(drept(l1l2...ln)))), otherwise
+
+(defun inorder1 (l)
+  (cond
+    ((null l) nil)
+    (t (myAppend (inorder1 (leftSubt l)) (myAppend (list (car l)) (inorder1 (rightSubt l)))))
+  )
+)
+
+(print (inorder1 '(A 2 B 0 C 2 D 0 E 0)))
+
+;8. Return the list of nodes of a tree of type (2) accessed inorder.
+(defun inorder2(L)
+    (cond
+    ((null (car L))nil)
+    (t (append (inorder2 (cadr L)) (list (car L)) (inorder2 (caddr L))))
+    )
+)
+
+(print (inorder2 '(1 (2) (3 (4) (5))) ))
+
+;9. Convert a tree of type (1) to type (2).
+
+; convert_back(l1l2..ln) = 
+; = nil , if n = 0
+; = myAppend(list(l1), convert_back(stang(l1l2...ln)) U list(convert_back(drept(l1l2...ln)))), if l2 = 1
+; = myAppend(list(l1), list(convert_back(stang(l1l2...ln)))), if l2 = 1
+; = list(l1), if l2 = 0
+
+(defun conversion12(l)
+  (cond
+    ((null l) nil)
+    ((equal (cadr l) 2) (myAppend (list (car l)) (cons (conversion12(leftSubt l)) (list (conversion12(rightSUbt l))))))
+    ((equal (cadr l) 1) (myAppend (list (car l)) (list (conversion12(leftSubt l)))))
+    (t (list (car l)))
+  )
+)
+
+
+(print (conversion12 '(A 2 B 0 C 2 D 0 E 0)))
+
+;10.Return the level of a node X in a tree of type (2). The levelof the root element is 0.
+
+(defun get_lvl_2 (node L lvl)
+    (cond
+        ((null (car L)) nil)
+        ((eq node (car L)) lvl)
+        (t (or (get_lvl_2 node (cadr L) (+ 1 lvl ) ) (get_lvl_2 node (caddr L) (+ 1 lvl ))))
+    )
+
+)
+
+(print (get_lvl_2 5 '(1 (2) (3 (4) (5))) 0))
+
+
+;11.Return the level (and coresponded list of nodes) with maximum number of nodes for a tree of type (2). The level of the root element is 0.
+
+
+(defun get-level (tree level)
+	(cond
+		((null tree) nil)
+		((= level 0) (list (car tree)))
+		(T (append (get-level (cadr tree) (- level 1)) (get-level (caddr tree) (- level 1))))
+	)
+)
+
+;(print (get-level '(1 (2 (3) (4)) (5 (6) (7))) 2))
+; => '(3 4 6 7)
+
+
+(defun _max-level (tree max lvl)
+	(setf me (get-level tree lvl))
+	(cond
+		((null me) max)
+		((> (list-length me) (list-length max)) (_max-level tree me (+ lvl 1)))
+		(T (_max-level tree max (+ lvl 1)))
+	)
+)
+
+
+
+(defun max-level (tree)
+	(_max-level tree '() 0)
+)
+
+(print (max-level  '(1 (2 (3) (4)) (5 (6) (7))) ) )
+
+
+;12.preorder traversal of tree of type (2) 
+
+(defun preorder2(l)
+    (cond 
+        ((null l) nil )
+        (t
+            (append (list (car l)) (preorder2 (cadr l)) (preorder2 (caddr l)))            
+        )
+    )
+)
+
+
+(print (preorder2 '(1 (2) (3 (5) (4))) ))
+
+;13. For a given tree of type (2) return the path from the root node to a certain given node X.
+(defun apare (l e)
+    (cond 
+        ((null l) nil)
+        ((equal (car l) e) t )
+        (t (or (apare (cadr l) e) (apare (caddr l) e)))
+    )
+)
+
+(defun cale (l e)
+    (cond
+        ((not (apare l e)) nil)
+        ((equal (car l) e)(list  e) )
+        ((apare (cadr l) e) (cons (car l) (cale (cadr l) e)))
+        (t (cons (car l) (cale (caddr l) e)))
+    )
+)    
+
+(print (cale '(A (B) (C (D) (E))) 'D))
+
+;15. postorder traversal of tree of type (2) 
+(defun postorder2(l)
+    (cond 
+        ((null l) nil )
+        (t
+            (append  (postorder2 (cadr l)) (postorder2 (caddr l)) (list (car l)))            
+        )
+    )
+)
+
+
+(print (postorder2 '(1 (2) (3 (5) (4))) ))
+
+;14.postorder traversal of tree of type (1) 
+
+
+(defun postorder1 (l)
+  (cond
+    ((null l) nil)
+    (t (myAppend (postorder1(leftSubt l)) (myAppend (postorder1(rightSubt l)) (list (car l)))))
+  )
+) 
+
+(print (postorder1 '(A 2 B 0 C 2 D 0 E 0)))
+;16.Determineif  a  tree  of  type  (2)  is  ballanced  (the  differencebetween  the  depth  of  two  subtrees  is equal to 1).
+
+ 
+(defun balanced (L lvl)
+    (cond
+        ((null L) lvl)
+        (t (setq left (balanced (cadr L) (+ 1 lvl)))
+            (setq right (balanced (caddr L) (+ 1 lvl)))
+            (cond
+                ((or (null left) (null right)) nil)
+                ((< (abs (- left right)) 2) (cond ((< left right) right)
+                                                    (t left)))
+                (t nil)
+            )
+        )
+    
+    )
+
+
+)
+
+(defun wrap (result)
+    (cond 
+        ((null result) NIL)
+        (T T)
+    )
+)
+(print (wrap (balanced '(A (B) (C (D) (E))) 0)))

@@ -1,0 +1,280 @@
+;L3- problems
+
+;1.Write a function to check if an atom is member of a list (the list is non-liniar)
+
+;is_member(L, A)={ 1, if l atom and l=A
+;                   0, if l atom and l!=A
+;                 + is_member(li, A), i=1,n
+
+
+(defun is_member(L A)
+    (cond 
+    ((and (atom L) (= L A)) 1)
+    ((listp L)( apply '+ (mapcar #' (lambda (S)(is_member S A)) L)))
+    (T 0)
+    )
+
+)
+
+(defun is-Member (L A)
+    (if (> (is_member L A) 0) T nil)
+)
+
+
+(print (is-Member '(1 2 3 4 (-1) ) -1))
+
+;2.Write a function that returns the sum of numeric atoms in a list, atany level.
+
+;sum(L)={ L, is L is numeric atom 
+;        0, if L not numeric atom
+;        + sum(li), i=1,n
+
+(defun sum(L)
+    (cond 
+    ((numberp L) L)
+    ((atom L) 0)
+    (t (apply '+ (mapcar #' sum L)))
+    )
+
+)
+
+(print (sum '(1 2 b (a c) (2 3 (5)))))
+
+;3.Define   a   function   to tests   the   membership   of   a   node   in   a   n-tree represented   as   (root list_of_nodes_subtree1 ... list_of_nodes_subtreen)
+
+;search( L N)={ 1, if l atom and l=A
+;                   0, if l atom and l!=A
+;                 + search(li, A), i=1,n
+
+
+(defun search_ (L N)
+    (cond 
+    ((and (atom L) (equal L N)) 1)
+    ((listp L)( apply '+ (mapcar #' (lambda (S)(search_ S N)) L)))
+    (T 0)
+    )
+
+)
+
+(print ( search_ '(a (b (c)) (d) (E (f))) 'g))
+
+;4.Write a function that returns the product of numeric atoms in a list,at any level.
+
+;prod(L)={ L, is L is numeric atom 
+;        0, if L not numeric atom
+;        * prod(li), i=1,n
+
+(defun prod(L)
+    (cond 
+    ((numberp L) L)
+    ((atom L) 1)
+    (t (apply '* (mapcar #' prod L)))
+    )
+
+)
+
+(print (prod '(1 2 b (a c) (2 3 (5)))))
+
+;5.Write a function that computes the sum of even numbers and then decrease the sum of odd numbers, at any level of a list.
+
+;comp(L)={L, if L numeric atom and L even
+;       -L, if L numeric atom and L odd
+;       0, if L atom
+;       + comp(li), i=1,n
+
+
+(defun comp (L)
+    (cond
+    ((and (numberp L) (= (mod L 2) 0)) L)
+    ((numberp L) (* -1 L))
+    ((atom L) 0)
+    (t (apply '+ (mapcar #'comp L)))
+    )
+
+)
+
+(print (comp '(2 4 6 A (1 3 11 B (C)))))
+
+;6.Write a function that returns the maximum of numeric atoms in a list,at any level
+
+;maxi(L)={ l, if L atom and numeric
+;          U maxi(li), otherwise
+
+(defun maxi (L)
+    (cond
+    ((numberp L) L)
+    ((atom L) 0)
+    ((listp L) (apply 'max (mapcar 'maxi L)))
+    )
+)
+
+(print (maxi '(2 4 6 A (1 3 11 B (C)))))
+
+;7.Write a function that substitutes an element E with all elements of a list L1 at all levels of a given list L.
+;subs(L, E, T)={ if l atom and l=e, T
+;                if l atom and l!=e, l
+;                U subs(li,E,T), i=1,n
+
+(defun subs (L E L1)
+    (cond
+    ((and (atom L) (equal L E)) L1)
+    ((and (atom L) ( not (equal L E)) L))
+    (t (mapcar #'(lambda (S)(subs S E L1)) L))
+    )
+    
+    
+    
+)
+(print (subs '(1 2 (1 2 3 (1) 3) 4 3 A) 1 '(a a a)))
+
+;8.Write a function to determine the number of nodes on the level k from a n-tree represented as follows: (rootlist_nodes_subtree1 ... list_nodes_subtreen) 
+
+;nrnodes(L, lvl, k)={ 1, if lvl=k
+;                     0, if L nil
+;                   + nrnodes(li lvl+1 k)
+
+
+(defun nrnodes (L lvl k)
+(   cond
+     ((null L) 0)
+      ((= lvl k) 1)
+      ((listp L) (apply #'+ (mapcar #'(lambda (L) (nrnodes L (+ 1 lvl) k)) L)))
+      (t 0)
+
+    
+
+)
+)
+(print (nrnodes '(a (b (c)) (d) (e (f))) 0 1))
+
+;9.Write a function that removes all occurrences of an atom from any level of a list.
+
+;remove(L e)={if l atom and l=e,[]
+             ;if l atom and l != e, [l]
+             ;U remove(li e)
+             
+(defun remove_(l e)
+    (cond
+    ((and (atom l) (equal l e)) nil)
+    ((atom l) (list l))
+    (t( apply #'append (mapcar #'(lambda (S) (remove_ S e)) l)))
+    
+
+)
+)
+
+(print (remove_ '(1 2 3 (1 2 a) 3 2 1) 1))
+
+;10.Define  a  function  that  replaces  one  node  with  another  one  in  a  n-treerepresented  as:  root list_of_nodes_subtree1... list_of_nodes_subtreen) 
+
+;replaceNode (L N R)={ if l atom and l=n, r
+                       ;if l atom and l!=n, L
+                       ; U replaceNode (Li N R)
+                       
+(defun replaceNode (L N R)
+    (cond
+        ((and (atom L) (eq L N)) (list R))
+        ((atom L) (list L))
+        (t(apply #'append (mapcar #'(lambda (S) (replaceNode S N R)) L)))
+    
+    )
+
+
+)
+
+
+(print (replaceNode '(a (b (c)) (d) (e (b))) 'b 'g))
+
+
+;11.Write a function to determine the depth of a list.
+
+;depth(L d)={if l atom, d
+            ;if l list, max depth(li d+1)
+            
+(defun depth (L d)
+(
+    cond
+        ((atom L) d)
+        ((listp L) (apply #'max (mapcar #'(lambda (S) (depth S (+ 1 d))) L)))
+
+)
+
+)
+
+(print (depth '(1 (2 (3)) (4) (5 (6 (7)))) -1))
+
+
+;12.Write a function that substitutes an element through another one at alllevels of a given list
+
+;subs1(L, E, T)={ if l atom and l=e, T
+;                if l atom and l!=e, l
+;                U subs(li,E,T), i=1,n
+
+(defun subs1 (L E L1)
+    (cond
+    ((and (atom L) (equal L E)) L1)
+    ((and (atom L) ( not (equal L E)) L))
+    (t (mapcar #'(lambda (S)(subs1 S E L1)) L))
+    )
+    
+    
+    
+)
+(print (subs1 '(1 2 (1 2 3 (1) 3) 4 3 A) 1 'a))
+
+;13.Define  a  function  that  returns  the  depth  of  a  tree  represented  as(root  list_of_nodes_subtree1  ... list_of_nodes_subtreen) 
+;treeDepth(l,d)={if l atom,d
+              ;if l list, max treeDepth(li,d+1)
+              
+(defun treeDepth (L d)
+(
+    cond
+        ((atom L) d)
+        ((listp L) (apply #'max (mapcar #'(lambda (S) (treeDepth S (+ 1 d))) L)))
+
+)
+
+)
+
+(print (depth '(a (b (c)) (d) (e (f))) 0))        
+
+;14.Write a function that returns the number of atoms in a list, at anylevel.
+
+;nrAtom(l)={if l atom, 1
+               ;+ nrAtom(li)
+(defun nrAtoms(L )
+(cond
+    ((atom l) 1)
+    (t (apply #'+ (mapcar #'nrAtoms L)))
+    
+
+)
+
+)
+(print (nrAtoms '(1 2 (1 2 3 (1) 3))))
+
+;15.Write a function that reversesa list together with all its sublists elements, at any level.
+
+;_reverse(L)={l is l is atom
+;            reverse(_reverse li)
+(defun _reverse (l)
+	(cond
+		((atom l) l)
+		((listp l) (mapcar '_reverse (reverse l)))
+	)
+)
+
+(print (_reverse '(1 (2 3) (4 ( 5 6)))))
+
+;16.Write a function that produces the linear list of all atoms of a given list, fromall levels, and written in the same order
+
+(defun linearize(l)
+    (cond 
+        ((null l) l)
+        ((atom l) (list l))
+        (t (mapcan #' linearize l))
+    )
+)
+
+
+(print (linearize '(((1 2) 3) (4 E))))
