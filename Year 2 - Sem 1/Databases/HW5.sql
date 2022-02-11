@@ -1,3 +1,4 @@
+--indexes
 --tb
 CREATE TABLE SERVICES_PROVIDER
 (
