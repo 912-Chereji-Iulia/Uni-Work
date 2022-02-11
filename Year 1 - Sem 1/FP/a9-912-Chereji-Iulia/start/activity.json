@@ -1,0 +1,66 @@
+{
+    "activities": [
+        {
+            "id": 1,
+            "person list": [
+                2
+            ],
+            "date": "2020-07-12",
+            "start time": "10:13",
+            "end time": "12:15",
+            "description": "studying"
+        },
+        {
+            "id": 2,
+            "person list": [
+                2
+            ],
+            "date": "2020-06-01",
+            "start time": "15:00",
+            "end time": "17:00",
+            "description": "going for a walk"
+        },
+        {
+            "id": 3,
+            "person list": [
+                2,
+                3
+            ],
+            "date": "2020-12-12",
+            "start time": "20:40",
+            "end time": "23:45",
+            "description": "party"
+        },
+        {
+            "id": 4,
+            "person list": [
+                2
+            ],
+            "date": "2020-12-23",
+            "start time": "20:20",
+            "end time": "23:45",
+            "description": "celebrating "
+        },
+        {
+            "id": 5,
+            "person list": [
+                2
+            ],
+            "date": "2020-12-12",
+            "start time": "02:20",
+            "end time": "02:40",
+            "description": "sleep"
+        },
+        {
+            "id": 6,
+            "person list": [
+                2,
+                5
+            ],
+            "date": "2021-12-12",
+            "start time": "12:00",
+            "end time": "21:00",
+            "description": "trip"
+        }
+    ]
+}

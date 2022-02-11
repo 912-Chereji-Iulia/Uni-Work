@@ -1,0 +1,4 @@
+repository = inmemory
+persons =
+activities = 
+menu = ui
